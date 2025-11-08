@@ -1,120 +1,337 @@
 # filtro-pre-jogo
 filtro-pre-jogo
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Filtro Pré-Jogo</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Filtro Pré-Jogo — Versão Aprimorada</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0a0a0a;
-      color: #f8f8f8;
-      padding: 20px;
+    :root{
+      --bg:#0b0d10; --card:#0f1720; --muted:#9aa5b1; --accent:#00e676; --danger:#ff5252; --warn:#ffb020; --glass: rgba(255,255,255,0.03);
     }
-    h1 {
-      text-align: center;
-      color: #00e676;
-    }
-    .container {
-      max-width: 500px;
-      margin: 0 auto;
-      background: #1a1a1a;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
-    }
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-    input {
-      width: 100%;
-      padding: 8px;
-      border-radius: 6px;
-      border: none;
-      background: #2a2a2a;
-      color: #fff;
-      margin-top: 5px;
-    }
-    button {
-      margin-top: 20px;
-      width: 100%;
-      background: #00e676;
-      color: #000;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    button:hover {
-      background: #00c853;
-    }
-    .resultado {
-      margin-top: 20px;
-      padding: 15px;
-      background: #111;
-      border-radius: 10px;
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;background:var(--bg);color:#e6eef6;-webkit-font-smoothing:antialiased}
+    .wrap{max-width:820px;margin:18px auto;padding:16px}
+    header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    h1{font-size:18px;margin:0;color:var(--accent)}
+    .sub{color:var(--muted);font-size:13px}
+    .card{background:linear-gradient(180deg,var(--card),#0b1116);padding:14px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6);margin-bottom:12px;border:1px solid rgba(255,255,255,0.03)}
+    .grid{display:grid;gap:10px}
+    .two{grid-template-columns:1fr 1fr}
+    label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+    input[type="text"], input[type="number"], select, textarea{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#eaf4ff;font-size:14px}
+    .row{display:flex;gap:10px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .btn.primary{background:var(--accent);color:#022}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:#cfe7ff}
+    .result{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+    .panel{flex:1;min-width:240px;padding:12px;border-radius:10px;background:var(--glass);border:1px solid rgba(255,255,255,0.02)}
+    .big{font-size:22px;font-weight:700}
+    .muted{color:var(--muted);font-size:13px}
+    .badge{display:inline-block;padding:6px 8px;border-radius:8px;font-weight:700}
+    .conf-high{background:rgba(0,230,118,0.12);color:var(--accent);border:1px solid rgba(0,230,118,0.18)}
+    .conf-med{background:rgba(255,176,32,0.08);color:var(--warn);border:1px solid rgba(255,176,32,0.14)}
+    .conf-low{background:rgba(255,82,82,0.08);color:var(--danger);border:1px solid rgba(255,82,82,0.14)}
+    .meta{font-size:13px;color:var(--muted);margin-top:6px}
+    .chart{height:48px;width:120px}
+    .footer{font-size:12px;color:var(--muted);margin-top:10px}
+    @media (max-width:640px){
+      .two{grid-template-columns:1fr}
+      .row{flex-direction:column}
     }
   </style>
 </head>
 <body>
-  <h1>Filtro Pré-Jogo</h1>
-  <div class="container">
-    <label>Odd Abertura Time 1</label>
-    <input type="number" id="odd1" step="0.01" placeholder="Ex: 1.90" />
-    
-    <label>Odd Abertura Empate</label>
-    <input type="number" id="oddraw" step="0.01" placeholder="Ex: 3.20" />
-    
-    <label>Odd Abertura Time 2</label>
-    <input type="number" id="odd2" step="0.01" placeholder="Ex: 3.60" />
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Filtro Pré-Jogo — v2</h1>
+        <div class="sub">Análise automática • Tendência Real x Odds • Mini-Chart</div>
+      </div>
+    </header>
 
-    <label>Odd Atual Time 1</label>
-    <input type="number" id="odd1a" step="0.01" placeholder="Ex: 2.00" />
-    
-    <label>Odd Atual Empate</label>
-    <input type="number" id="oddra" step="0.01" placeholder="Ex: 3.10" />
-    
-    <label>Odd Atual Time 2</label>
-    <input type="number" id="odd2a" step="0.01" placeholder="Ex: 3.40" />
-    
-    <label>Desfalques (opcional)</label>
-    <input type="text" id="desfalques" placeholder="Ex: afeta o time 1" />
+    <div class="card grid two">
+      <div>
+        <label>Time 1 (Mandante)</label>
+        <input id="team1" type="text" value="Palmeiras" />
+      </div>
+      <div>
+        <label>Time 2 (Visitante)</label>
+        <input id="team2" type="text" value="Santos" />
+      </div>
 
-    <button onclick="analisar()">Analisar</button>
+      <div>
+        <label>Odd Abertura - Time 1</label>
+        <input id="open1" type="number" step="0.01" value="1.40" />
+      </div>
+      <div>
+        <label>Odd Atual - Time 1</label>
+        <input id="cur1" type="number" step="0.01" value="1.48" />
+      </div>
 
-    <div class="resultado" id="resultado"></div>
+      <div>
+        <label>Odd Abertura - Empate</label>
+        <input id="opend" type="number" step="0.01" value="4.50" />
+      </div>
+      <div>
+        <label>Odd Atual - Empate</label>
+        <input id="curd" type="number" step="0.01" value="4.20" />
+      </div>
+
+      <div>
+        <label>Odd Abertura - Time 2</label>
+        <input id="open2" type="number" step="0.01" value="8.00" />
+      </div>
+      <div>
+        <label>Odd Atual - Time 2</label>
+        <input id="cur2" type="number" step="0.01" value="7.00" />
+      </div>
+
+      <div style="grid-column:1 / -1">
+        <label>Observações / Desfalques (breve)</label>
+        <input id="notes" type="text" placeholder="Ex: Santos com ausências na defesa" value="Santos: ausências importantes na defesa" />
+      </div>
+
+      <div style="grid-column:1 / -1;display:flex;gap:8px;align-items:center">
+        <button class="btn primary" onclick="runAnalysis()">Aplicar Filtro</button>
+        <button class="btn ghost" onclick="resetDefaults()">Reset</button>
+        <div class="muted" style="margin-left:auto">Pro tip: preencha odds de abertura e atuais</div>
+      </div>
+    </div>
+
+    <div class="card result">
+      <div class="panel" id="panel-main">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div class="muted">Favorito</div>
+            <div id="favName" class="big">—</div>
+            <div id="favPercent" class="muted">—</div>
+          </div>
+          <div style="text-align:right">
+            <div class="muted">Confiabilidade</div>
+            <div id="confBadge" class="badge conf-med">—</div>
+            <div class="meta" id="trendText">Tendência: —</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:12px;align-items:center">
+          <div>
+            <svg class="chart" id="miniChart" viewBox="0 0 120 48" preserveAspectRatio="none" aria-hidden="true"></svg>
+          </div>
+          <div style="flex:1">
+            <div class="muted">Delta mercado</div>
+            <div id="deltaText" style="font-weight:700">—</div>
+            <div class="meta" id="suggestionText">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-right">
+        <div class="muted">Probabilidades Implícitas (Atual)</div>
+        <div style="margin-top:8px">
+          <div id="probLine" style="font-weight:700">—</div>
+          <div class="meta" id="obsText">—</div>
+        </div>
+
+        <div style="margin-top:12px">
+          <div class="muted">Resumo</div>
+          <div id="summary" style="margin-top:8px;font-weight:600">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">Se quiser, eu também adiciono export CSV e histórico de análises — diga quando quiser.</div>
   </div>
 
-  <script>
-    function analisar() {
-      const o1 = parseFloat(document.getElementById('odd1').value);
-      const o2 = parseFloat(document.getElementById('odd2').value);
-      const o1a = parseFloat(document.getElementById('odd1a').value);
-      const o2a = parseFloat(document.getElementById('odd2a').value);
-      const desfalques = document.getElementById('desfalques').value.toLowerCase();
-      
-      let resultado = "";
-      if (o1a > o1 && o2a < o2) {
-        resultado = "Tendência de alta para o Time 1 — possível desvalorização. Time 2 ganha força.";
-      } else if (o2a > o2 && o1a < o1) {
-        resultado = "Tendência de queda para o Time 1 — o mercado confia mais nele.";
-      } else {
-        resultado = "Sem movimento forte detectado — jogo equilibrado.";
-      }
+<script>
+  // Helpers
+  function impliedProb(odd){ return odd>0? 1/odd : 0; }
+  function pct(v){ return (v*100).toFixed(1) + '%'; }
+  function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
 
-      if (desfalques.includes("time 1")) {
-        resultado += " ⚠️ Desfalques pesam contra o Time 1.";
-      } else if (desfalques.includes("time 2")) {
-        resultado += " ⚠️ Desfalques pesam contra o Time 2.";
-      }
+  function runAnalysis(){
+    // read inputs
+    const team1 = document.getElementById('team1').value || 'Time1';
+    const team2 = document.getElementById('team2').value || 'Time2';
+    const open1 = parseFloat(document.getElementById('open1').value) || 0;
+    const cur1  = parseFloat(document.getElementById('cur1').value)  || 0;
+    const opend = parseFloat(document.getElementById('opend').value) || 0;
+    const curd  = parseFloat(document.getElementById('curd').value)  || 0;
+    const open2 = parseFloat(document.getElementById('open2').value) || 0;
+    const cur2  = parseFloat(document.getElementById('cur2').value)  || 0;
+    const notes = document.getElementById('notes').value || '';
 
-      document.getElementById('resultado').innerText = resultado;
+    // implied probabilities
+    const ipOpen1 = impliedProb(open1), ipOpen2 = impliedProb(open2), ipOpenD = impliedProb(opend);
+    const ipCur1  = impliedProb(cur1),  ipCur2  = impliedProb(cur2),  ipCurD  = impliedProb(curd);
+
+    // normalize market (simple: remove overround proportionally)
+    const sumCur = ipCur1 + ipCur2 + ipCurD;
+    const ipCur1_n = ipCur1 / sumCur;
+    const ipCur2_n = ipCur2 / sumCur;
+    const ipCurD_n = ipCurD / sumCur;
+
+    // favorite detection
+    const maxProb = Math.max(ipCur1_n, ipCur2_n);
+    const favName = ipCur1_n > ipCur2_n ? team1 : team2;
+    const favPercent = (ipCur1_n > ipCur2_n ? ipCur1_n : ipCur2_n);
+
+    // delta movement (market vs open)
+    const delta1 = ipCur1 - ipOpen1;
+    const delta2 = ipCur2 - ipOpen2;
+    const deltaD = ipCurD - ipOpenD;
+
+    // basic scoring rules
+    let score = 50;
+    // favorite extreme
+    const favOdd = Math.min(cur1 || 999, cur2 || 999);
+    if(favOdd <= 1.25) { score += 20; }
+    // strong market movement
+    if(Math.abs(delta1) >= 0.20 || Math.abs(delta2) >= 0.20) { score += 15; }
+    // notes detection
+    if(/ausen|desfal|lesa|suspens/i.test(notes)) { score += 18; }
+    // if underdog improved strongly
+    if(delta2 > 0.05 && ipCur2_n > ipOpen2) { score += 8; }
+
+    score = clamp(score, 0, 100);
+
+    // confidence label/color
+    let confLabel = 'Média', confClass = 'conf-med';
+    if(score >= 80){ confLabel = 'Alta'; confClass = 'conf-high'; }
+    else if(score < 60){ confLabel = 'Baixa'; confClass = 'conf-low'; }
+
+    // trend interpretation: compare trend score (simple heuristic)
+    const trendScore = ((ipCur1_n - ipOpen1) - (ipCur2_n - ipOpen2));
+    let trendText = 'Neutro';
+    if(trendScore > 0.02) trendText = `${team1} ganhando confiança`;
+    if(trendScore < -0.02) trendText = `${team2} ganhando força`;
+
+    // delta text
+    const deltaText = `${team1}: ${ ( (ipCur1 - ipOpen1)*100 ).toFixed(2) } p.p.  •  ${team2}: ${ ( (ipCur2 - ipOpen2)*100 ).toFixed(2) } p.p.`;
+
+    // suggestion logic (simple)
+    let suggestion = 'Jogo equilibrado — evitar stake alta.';
+    if(score >= 80) suggestion = `Favorito confiável — considerar apostas no ${favName} (1X2) ou Asian -0.5.`;
+    else if(score >= 60) suggestion = `Favoritismo com risco moderado — sugerido: dupla chance ou stake reduzida.`;
+
+    // summary text
+    let summary = `${favName} aparece como favorito (${pct(favPercent)}) com confiabilidade ${confLabel}. ${trendText}. ${suggestion}`;
+
+    // update UI
+    document.getElementById('favName').innerText = favName;
+    document.getElementById('favPercent').innerText = pct(favPercent) + ` • Odd atual fav: ${favOdd.toFixed(2)}`;
+    const badge = document.getElementById('confBadge');
+    badge.innerText = confLabel;
+    badge.className = 'badge ' + confClass;
+
+    document.getElementById('trendText').innerText = `Tendência: ${trendText}`;
+    document.getElementById('deltaText').innerText = deltaText;
+    document.getElementById('suggestionText').innerText = suggestion;
+    document.getElementById('probLine').innerText = `${team1}: ${pct(ipCur1_n)} • Empate: ${pct(ipCurD_n)} • ${team2}: ${pct(ipCur2_n)}`;
+    document.getElementById('obsText').innerText = notes ? 'Observações: ' + notes : '';
+
+    document.getElementById('summary').innerText = summary;
+
+    // mini-chart draw: simple line from open->cur for favored odd
+    drawMiniChart(open1, cur1, open2, cur2);
+  }
+
+  function drawMiniChart(open1, cur1, open2, cur2){
+    // create a tiny visual showing change direction and magnitude for favorite vs underdog
+    const svg = document.getElementById('miniChart');
+    svg.innerHTML = '';
+    const w = 120, h = 48;
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+    // normalize odds to values (lower odd => stronger)
+    function val(o){ return o>0 ? (1/o) : 0; }
+    const vOpen1 = val(open1), vCur1 = val(cur1), vOpen2 = val(open2), vCur2 = val(cur2);
+    // map values to y
+    const minV = Math.min(vOpen1, vCur1, vOpen2, vCur2);
+    const maxV = Math.max(vOpen1, vCur1, vOpen2, vCur2);
+    const norm = (x) => (maxV === minV) ? (h/2) : (h - ((x - minV)/(maxV - minV))*(h-8) - 4);
+
+    // points: open1 -> cur1 (left), open2->cur2 (right)
+    const x1 = 20, x2 = 100;
+    const y_o1 = norm(vOpen1), y_c1 = norm(vCur1);
+    const y_o2 = norm(vOpen2), y_c2 = norm(vCur2);
+
+    // draw baseline
+    const base = document.createElementNS('http://www.w3.org/2000/svg','line');
+    base.setAttribute('x1',10); base.setAttribute('y1',h-6);
+    base.setAttribute('x2',w-10); base.setAttribute('y2',h-6);
+    base.setAttribute('stroke','rgba(255,255,255,0.04)'); base.setAttribute('stroke-width','1');
+    svg.appendChild(base);
+
+    // function to draw a small path and arrow
+    function drawSegment(xo, yo, xc, yc, color){
+      // line
+      const line = document.createElementNS('http://www.w3.org/2000/svg','path');
+      line.setAttribute('d', `M ${xo} ${yo} L ${xc} ${yc}`);
+      line.setAttribute('stroke', color);
+      line.setAttribute('stroke-width','2.5');
+      line.setAttribute('fill','none');
+      line.setAttribute('stroke-linecap','round');
+      svg.appendChild(line);
+      // small circle at end
+      const circ = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      circ.setAttribute('cx', xc); circ.setAttribute('cy', yc); circ.setAttribute('r', 3.2);
+      circ.setAttribute('fill', color); svg.appendChild(circ);
+      // arrow head
+      const dx = xc - xo, dy = yc - yo;
+      const ang = Math.atan2(dy,dx);
+      const ax = xc - Math.cos(ang)*8, ay = yc - Math.sin(ang)*8;
+      const arrow = document.createElementNS('http://www.w3.org/2000/svg','path');
+      arrow.setAttribute('d', `M ${ax-3} ${ay-3} L ${xc} ${yc} L ${ax+3} ${ay+3}`);
+      arrow.setAttribute('stroke', color); arrow.setAttribute('stroke-width','1.5'); arrow.setAttribute('fill','none'); svg.appendChild(arrow);
     }
-  </script>
+
+    // choose colors: improvement -> green, worse -> red
+    const col1 = (vCur1 > vOpen1) ? '#00e676' : '#ff5252';
+    const col2 = (vCur2 > vOpen2) ? '#00e676' : '#ff5252';
+
+    drawSegment(x1, y_o1, x1+20, y_c1, col1);
+    drawSegment(x2-20, y_o2, x2, y_c2, col2);
+
+    // labels
+    function makeText(x,y,txt,small){
+      const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+      t.setAttribute('x', x); t.setAttribute('y', y);
+      t.setAttribute('fill', 'rgba(255,255,255,0.8)');
+      t.setAttribute('font-size', small ? '9' : '11');
+      t.setAttribute('font-family','Arial,Helvetica,sans-serif');
+      t.textContent = txt;
+      svg.appendChild(t);
+    }
+    makeText(x1-6, h-2, '1', 1);
+    makeText(x2-6, h-2, '2', 1);
+  }
+
+  function resetDefaults(){
+    document.getElementById('team1').value = 'Palmeiras';
+    document.getElementById('team2').value = 'Santos';
+    document.getElementById('open1').value = '1.40';
+    document.getElementById('cur1').value = '1.48';
+    document.getElementById('opend').value = '4.50';
+    document.getElementById('curd').value = '4.20';
+    document.getElementById('open2').value = '8.00';
+    document.getElementById('cur2').value = '7.00';
+    document.getElementById('notes').value = 'Santos: ausências importantes na defesa';
+    // clear panels
+    document.getElementById('favName').innerText = '—';
+    document.getElementById('favPercent').innerText = '—';
+    document.getElementById('confBadge').innerText = '—';
+    document.getElementById('trendText').innerText = 'Tendência: —';
+    document.getElementById('deltaText').innerText = '—';
+    document.getElementById('suggestionText').innerText = '—';
+    document.getElementById('probLine').innerText = '—';
+    document.getElementById('summary').innerText = '—';
+    document.getElementById('miniChart').innerHTML = '';
+  }
+
+  // init default
+  resetDefaults();
+</script>
 </body>
 </html>
