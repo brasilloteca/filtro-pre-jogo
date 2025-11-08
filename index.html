@@ -1,0 +1,120 @@
+# filtro-pre-jogo
+filtro-pre-jogo
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Filtro Pré-Jogo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0a0a0a;
+      color: #f8f8f8;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #00e676;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      background: #2a2a2a;
+      color: #fff;
+      margin-top: 5px;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      background: #00e676;
+      color: #000;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #00c853;
+    }
+    .resultado {
+      margin-top: 20px;
+      padding: 15px;
+      background: #111;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Filtro Pré-Jogo</h1>
+  <div class="container">
+    <label>Odd Abertura Time 1</label>
+    <input type="number" id="odd1" step="0.01" placeholder="Ex: 1.90" />
+    
+    <label>Odd Abertura Empate</label>
+    <input type="number" id="oddraw" step="0.01" placeholder="Ex: 3.20" />
+    
+    <label>Odd Abertura Time 2</label>
+    <input type="number" id="odd2" step="0.01" placeholder="Ex: 3.60" />
+
+    <label>Odd Atual Time 1</label>
+    <input type="number" id="odd1a" step="0.01" placeholder="Ex: 2.00" />
+    
+    <label>Odd Atual Empate</label>
+    <input type="number" id="oddra" step="0.01" placeholder="Ex: 3.10" />
+    
+    <label>Odd Atual Time 2</label>
+    <input type="number" id="odd2a" step="0.01" placeholder="Ex: 3.40" />
+    
+    <label>Desfalques (opcional)</label>
+    <input type="text" id="desfalques" placeholder="Ex: afeta o time 1" />
+
+    <button onclick="analisar()">Analisar</button>
+
+    <div class="resultado" id="resultado"></div>
+  </div>
+
+  <script>
+    function analisar() {
+      const o1 = parseFloat(document.getElementById('odd1').value);
+      const o2 = parseFloat(document.getElementById('odd2').value);
+      const o1a = parseFloat(document.getElementById('odd1a').value);
+      const o2a = parseFloat(document.getElementById('odd2a').value);
+      const desfalques = document.getElementById('desfalques').value.toLowerCase();
+      
+      let resultado = "";
+      if (o1a > o1 && o2a < o2) {
+        resultado = "Tendência de alta para o Time 1 — possível desvalorização. Time 2 ganha força.";
+      } else if (o2a > o2 && o1a < o1) {
+        resultado = "Tendência de queda para o Time 1 — o mercado confia mais nele.";
+      } else {
+        resultado = "Sem movimento forte detectado — jogo equilibrado.";
+      }
+
+      if (desfalques.includes("time 1")) {
+        resultado += " ⚠️ Desfalques pesam contra o Time 1.";
+      } else if (desfalques.includes("time 2")) {
+        resultado += " ⚠️ Desfalques pesam contra o Time 2.";
+      }
+
+      document.getElementById('resultado').innerText = resultado;
+    }
+  </script>
+</body>
+</html>
